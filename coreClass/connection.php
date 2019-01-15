@@ -74,7 +74,7 @@
 			try
 			{
 				$sql="SELECT ".$this->arrayToStringColumn($columns)." FROM ".$table." ".$this->arrayToStringCondition($conditions).";";
-
+				
 				if($raw_data=mysqli_query($this->conn, $sql))
 				{
 					return $raw_data->fetch_all(MYSQLI_ASSOC);

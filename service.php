@@ -5,7 +5,7 @@
     $data_input=json_decode(trim(file_get_contents('php://input')), true);
 
     $url="";
-
+    
     if(count($data_input)>0)
     {
 
@@ -37,25 +37,27 @@
                 }
 
                 $loginObject=new loginProcess();
-                $resultLogin=$loginObject->checkLogin($username, $password, "tb_employee");
-
-                $MyObject = new MyObjectInJson();
-                $MyObject->ObjectID = 'key';
-                $MyObject->ObjectInJson = $resultLogin;
+                $MyObject=$loginObject->checkLogin($username, $password, "tb_employee");
             }
         }
         else
         {
-            $MyObject = new MyObjectInJson();
-            $MyObject->ObjectID = 'key';
-            $MyObject->ObjectInJson = -1;
+            $MyObject[0] = new MyObjectInJson();
+            $MyObject[0]->ObjectID = 'key';
+            $MyObject[0]->ObjectInJson = -1;
+            $MyObject[1] = new MyObjectInJson();
+            $MyObject[1]->ObjectID = 'message';
+            $MyObject[1]->ObjectInJson = 'no url parameter matched';
         }
     }
     else
     {
-        $MyObject = new MyObjectInJson();
-        $MyObject->ObjectID = 'key';
-        $MyObject->ObjectInJson = -1;
+        $MyObject[0] = new MyObjectInJson();
+        $MyObject[0]->ObjectID = 'key';
+        $MyObject[0]->ObjectInJson = -1;
+        $MyObject[1] = new MyObjectInJson();
+        $MyObject[1]->ObjectID = 'message';
+        $MyObject[1]->ObjectInJson = 'no parameter passed';
     }
 
     echo json_encode($MyObject);

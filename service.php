@@ -1,6 +1,8 @@
 <?php
     require_once("coreClass/myObject.php");
     require_once("myClass/loginProcess.php");
+    require_once("myClass/getTableProcess.php");
+    require_once("myClass/registrasiProcess.php");
 
     $data_input=json_decode(trim(file_get_contents('php://input')), true);
 
@@ -23,6 +25,8 @@
             {
                 $username="";
                 $password="";
+                $nameRegistrasi="";
+                $descriptionRegistrasi="";
                 foreach($data_input as $data)
                 {
                     if($data['ObjectID']=="username")
@@ -34,10 +38,25 @@
                     {
                         $password=$data['ObjectInJson'];
                     }
+
+                    if($data['ObjectID']=="nameRegistrasi")
+                    {
+                        $nameRegistrasi=$data['ObjectInJson'];
+                    }
+
+                    if($data['ObjectID']=="descriptionRegistrasi")
+                    {
+                        $descriptionRegistrasi=$data['ObjectInJson'];
+                    }
                 }
 
                 $loginObject=new loginProcess();
                 $MyObject=$loginObject->checkLogin($username, $password, "tb_employee");
+            }
+            else if($url=="tablemenu")
+            {
+                $tableObject=new getTableProcess();
+                $MyObject=$tableObject->getTableRestaurant("tb_meja");
             }
         }
         else

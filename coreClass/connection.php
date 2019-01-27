@@ -64,6 +64,42 @@
 			return $this->removeWhiteSpace($sql_column);
 		}
 
+		function  arrayToStringValues($data)
+		{
+			$sql_values="";
+			foreach($data as $row)
+			{
+				if($sql_values=="")
+				{
+					$sql_values="values(".$this->arrayToStringColumn($row).")";
+				}
+				else
+				{
+					$sql_values=$sql_values.",values(".$this->arrayToStringColumn($row).")";
+				}
+			}
+
+			return $this->removeWhiteSpace($sql_values);
+		}
+
+		function arrayToStringUpdate($data)
+		{
+			$sql_update="";
+			foreach($data as $row)
+			{
+				if($sql_update=="")
+				{
+					$sql_update=$row[0]."=".$row[1];
+				}
+				else
+				{
+					$sql_update=$sql_update.", ". $row[0]."=".$row[1];
+				}
+			}
+
+			return $this->removeWhiteSpace($sql_update);
+		}
+
 		function errorMessage($class, $method, $sql, $description)
 		{
 			return "Class: ".$class."<br>Method: ".$method."<br>SQL: ".$sql."<br>Description: ".$description;
@@ -91,6 +127,66 @@
 			//$sql = mysqli_query($this->conn, "SELECT * FROM ".$table_name." where username='$usernamed';");
 		}
 
+		function insert($table, $columns, $data)
+		{
+			try
+			{
+				$sql="insert tb_kategori(".$this->arrayToStringColumn($columns).") ".$this->arrayToStringValues($data).";";
+				if($raw_data=mysqli_query($this->conn, $sql))
+				{
+					return "1";
+				}
+				else
+				{
+					return $this->errorMessage(get_class($this), __METHOD__, $sql, mysqli_error($this->conn));
+				}
+			}
+			catch(Exception $e)
+			{
+				echo 'Message: ' .$e->getMessage();
+			}
+		}
 
+		function delete($table, $conditions)
+		{
+			try
+			{
+				$sql="DELETE FROM ".$table." ".$this->arrayToStringCondition($conditions).";";
+
+				if($raw_data=mysqli_query($this->conn, $sql))
+				{
+					return "1";
+				}
+				else
+				{
+					return $this->errorMessage(get_class($this), __METHOD__, $sql, mysqli_error($this->conn));
+				}
+			}
+			catch(Exception $e)
+			{
+				echo 'Message: ' .$e->getMessage();
+			}
+		}
+
+		function update($table, $data, $conditions)
+		{
+			try
+			{
+				$sql="UPDATE ".$table." SET ".$this->arrayToStringUpdate($data)." ".$this->arrayToStringCondition($conditions).";";
+
+				if($raw_data=mysqli_query($this->conn, $sql))
+				{
+					return "1";
+				}
+				else
+				{
+					return $this->errorMessage(get_class($this), __METHOD__, $sql, mysqli_error($this->conn));
+				}
+			}
+			catch(Exception $e)
+			{
+				echo 'Message: ' .$e->getMessage();
+			}
+		}
 	}
 ?>
